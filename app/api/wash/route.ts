@@ -3,9 +3,19 @@ import * as cheerio from "cheerio"
 import OpenAI from "openai"
 import type { WashResult } from "@/lib/types/wash"
 
+const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+const OPENROUTER_MODEL = "deepseek/deepseek-chat"
+const OPENROUTER_SITE_URL =
+  process.env.OPENROUTER_SITE_URL ?? "https://localhost:3000"
+
 function getOpenAIClient() {
   return new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.OPENROUTER_API_KEY,
+    baseURL: OPENROUTER_BASE_URL,
+    defaultHeaders: {
+      "HTTP-Referer": OPENROUTER_SITE_URL,
+      "X-Title": "NewsWash",
+    },
   })
 }
 
@@ -104,9 +114,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.OPENROUTER_API_KEY) {
       return NextResponse.json(
-        { error: "OpenAI API 키가 설정되지 않았습니다." },
+        { error: "OpenRouter API 키가 설정되지 않았습니다." },
         { status: 500 }
       )
     }
@@ -118,7 +128,7 @@ export async function POST(request: NextRequest) {
 
     const openai = getOpenAIClient()
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: OPENROUTER_MODEL,
       messages: [
         {
           role: "system",

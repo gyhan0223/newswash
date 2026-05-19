@@ -48,7 +48,7 @@ export function ResultSection({ result }: ResultSectionProps) {
         </div>
       </div>
 
-      <motionCards result={result} />
+      <MotionCards result={result} />
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <button
@@ -93,7 +93,7 @@ export function ResultSection({ result }: ResultSectionProps) {
   )
 }
 
-function motionCards({ result }: { result: WashResult }) {
+function MotionCards({ result }: { result: WashResult }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="rounded-3xl border border-border bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
