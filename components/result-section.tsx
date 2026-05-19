@@ -3,6 +3,7 @@
 import { useState } from "react"
 import {
   ListOrdered,
+  ScrollText,
   BookOpen,
   Instagram,
   Check,
@@ -22,6 +23,9 @@ export function ResultSection({ result }: ResultSectionProps) {
   const copyText = [
     "📰 3줄 요약",
     ...result.summary.map((line, i) => `${i + 1}. ${line}`),
+    "",
+    "📖 쉽게 풀어쓴 본문",
+    result.story,
     "",
     "💡 어려운 용어 쉬운 풀이",
     ...result.terms.map(
@@ -115,6 +119,20 @@ function MotionCards({ result }: { result: WashResult }) {
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className="rounded-3xl border border-border bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10">
+            <ScrollText className="h-5 w-5 text-primary" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground">
+            쉽게 풀어쓴 본문
+          </h3>
+        </div>
+        <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground">
+          {result.story}
+        </p>
       </div>
 
       {result.terms.length > 0 && (

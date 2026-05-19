@@ -76,19 +76,31 @@ async function scrapeArticle(url: string): Promise<string> {
 }
 
 function parseWashResult(raw: string): WashResult {
-  const parsed = JSON.parse(raw) as WashResult
+  const parsed = JSON.parse(raw) as Partial<WashResult> & Record<string, unknown>
 
   if (!Array.isArray(parsed.summary) || parsed.summary.length === 0) {
     throw new Error("AI 응답 형식이 올바르지 않습니다.")
   }
 
-  if (!Array.isArray(parsed.terms)) {
-    parsed.terms = []
+  let story = ""
+  if (typeof parsed.story === "string") {
+    story = parsed.story.trim()
+  } else if (parsed.story != null) {
+    story = String(parsed.story).trim()
+  }
+  if (!story) {
+    throw new Error("AI 응답에 story(풀어쓴 본문)가 없거나 비어 있습니다.")
+  }
+
+  let terms: WashResult["terms"] = []
+  if (Array.isArray(parsed.terms)) {
+    terms = parsed.terms as WashResult["terms"]
   }
 
   return {
-    summary: parsed.summary.slice(0, 3),
-    terms: parsed.terms,
+    summary: parsed.summary.slice(0, 3) as string[],
+    story,
+    terms,
   }
 }
 
@@ -132,22 +144,37 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: "system",
-          content: `너는 어려운 경제/정치 뉴스를 7세 아이도 이해할 수 있게 아주 쉬운 비유를 들어 설명해주는 '뉴스 세탁기'야.
+          content: `너는 어려운 경제·정치 뉴스를 읽기 쉽게 바꿔 주는 '뉴스 세탁기'야.
 반드시 아래 JSON 형식으로만 응답해. 다른 텍스트는 포함하지 마.
 
 {
   "summary": ["핵심 요약 1줄", "핵심 요약 2줄", "핵심 요약 3줄"],
+  "story": "토스체로 쉽고 다정하게 풀어쓴 기사 본문 이야기",
   "terms": [
     {
       "term": "어려운 용어",
-      "explanation": "7세도 이해할 수 있는 쉬운 설명",
-      "example": "일상 생활 비유나 구체적 사례"
+      "explanation": "설명",
+      "example": "사례"
     }
   ]
 }
 
+대화·문체 지침 (토스 UX 라이팅에 맞춤):
+- 억지스러운 캐릭터 컨셉(예: 고슴도치 말투 등)은 절대 쓰지 마.
+- 말투는 든든한 금융 전문가가 옆에서 다정하게 설명해 주듯, 담백하고 친근한 존댓말을 써. 예: "~해요", "~했죠", "~일까요?"
+- 호흡은 짧게: 문장은 길게 늘이지 말고, "~해요.", "~했죠."처럼 문장이 끝나면 그 다음 내용 전에 한 박자 쉬는 느낌으로 줄을 바꾸거나 빈 줄로 여백을 줘서 툭툭 던지듯 다정한 대화처럼 읽히게 해.
+
+"story" 필드 전용 레이아웃·가독성:
+- 긴 글을 한 덩어리로 붙여 쓰지 마. 의미 단위(대략 2~3문장)마다 반드시 빈 줄 하나, 즉 줄바꿈 두 번(\\n\\n)을 넣어 단락을 나눠.
+- 뉴스 원문의 맥락·인과관계는 생략하지 말고, 어려운 용어와 수치는 일상어로 풀되, 위 단락 규칙으로 모바일·웹에서 읽기 편하게 재구성해.
+- JSON 문자열 안에서 줄바꿈은 표준 JSON 이스케이프로만 넣어: 실제 줄바꿈 한 번은 \\n, 단락 구분(빈 줄)은 \\n\\n. 따옴표(")는 반드시 이스케이프(\\")하고, 줄바꿈을 임의로 제거하거나 한 줄로 압축하지 마. 이렇게 쓰면 클라이언트가 JSON.parse 했을 때 story 안에 올바른 \\n이 살아 있어야 해.
+
+"story" 출력 형태 예시(참고용 — 실제 내용은 기사에 맞게 바꿔):
+"금리가 오르면 보통 대출을 줄여요.\\n\\n왜냐하면 이자 부담이 커지기 때문이죠.\\n\\n이번 조치도 그런 흐름에서 나온 거예요."
+
 규칙:
 - summary는 정확히 3개의 문자열
+- story는 반드시 포함하는 하나의 문자열(빈 문자열 금지). 단락 구분을 위해 전체 길이에 걸쳐 \\n\\n을 여러 번 써도 됨.
 - terms는 기사에서 나온 어려운 용어 2~5개
 - 모든 문장은 한국어로 작성`,
         },
