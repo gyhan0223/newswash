@@ -45,7 +45,7 @@ export function ResultSection({ result }: ResultSectionProps) {
 
   return (
     <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="mb-8 flex justify-center">
+      <div className="mb-10 flex justify-center md:mb-12">
         <div className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground">
           <Sparkles className="h-4 w-4 text-primary" />
           세탁 완료
@@ -54,7 +54,7 @@ export function ResultSection({ result }: ResultSectionProps) {
 
       <MotionCards result={result} />
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-12 flex flex-col gap-3 sm:flex-row md:mt-14">
         <button
           onClick={handleCopy}
           className={cn(
@@ -90,7 +90,7 @@ export function ResultSection({ result }: ResultSectionProps) {
         </button>
       </div>
 
-      <p className="mt-8 text-center text-sm text-muted-foreground">
+      <p className="mt-10 text-center text-sm leading-relaxed text-muted-foreground md:mt-12">
         AI가 생성한 요약입니다. 원문과 함께 확인해주세요.
       </p>
     </section>
@@ -99,21 +99,23 @@ export function ResultSection({ result }: ResultSectionProps) {
 
 function MotionCards({ result }: { result: WashResult }) {
   return (
-    <div className="flex flex-col gap-4">
-      <div className="rounded-3xl border border-border bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
-        <div className="mb-4 flex items-center gap-3">
+    <div className="flex flex-col gap-10 md:gap-12">
+      <div className="rounded-3xl border border-border bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-md md:p-8">
+        <div className="mb-6 flex items-center gap-3 md:mb-7">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10">
             <ListOrdered className="h-5 w-5 text-primary" />
           </div>
-          <h3 className="text-lg font-semibold text-foreground">3줄 요약</h3>
+          <h3 className="text-lg font-semibold tracking-tight text-foreground md:text-xl">
+            3줄 요약
+          </h3>
         </div>
-        <ul className="flex flex-col gap-3">
+        <ul className="flex flex-col gap-4 md:gap-5">
           {result.summary.map((line, index) => (
-            <li key={index} className="flex items-start gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-muted text-xs font-semibold text-muted-foreground">
+            <li key={index} className="flex items-start gap-3 md:gap-4">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-muted text-xs font-semibold text-muted-foreground md:h-7 md:w-7 md:text-sm">
                 {index + 1}
               </span>
-              <span className="text-base leading-relaxed text-foreground">
+              <span className="text-base leading-relaxed text-foreground/95 md:text-lg md:leading-relaxed">
                 {line}
               </span>
             </li>
@@ -121,40 +123,45 @@ function MotionCards({ result }: { result: WashResult }) {
         </ul>
       </div>
 
-      <div className="rounded-3xl border border-border bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
-        <div className="mb-4 flex items-center gap-3">
+      <div className="rounded-3xl border border-border bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-md md:p-8">
+        <div className="mb-6 flex items-center gap-3 md:mb-8">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10">
             <ScrollText className="h-5 w-5 text-primary" />
           </div>
-          <h3 className="text-lg font-semibold text-foreground">
+          <h3 className="text-lg font-semibold tracking-tight text-foreground md:text-xl">
             쉽게 풀어쓴 본문
           </h3>
         </div>
-        <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground">
+        <p
+          className={cn(
+            "whitespace-pre-wrap font-normal",
+            "text-base leading-loose text-foreground/90 md:text-lg md:leading-loose"
+          )}
+        >
           {result.story}
         </p>
       </div>
 
       {result.terms.length > 0 && (
-        <div className="rounded-3xl border border-amber-200/50 bg-accent p-6 shadow-sm transition-shadow duration-200 hover:shadow-md">
-          <div className="mb-4 flex items-center gap-3">
+        <div className="rounded-3xl border border-amber-200/50 bg-accent p-6 shadow-sm transition-shadow duration-200 hover:shadow-md md:p-8">
+          <div className="mb-6 flex items-center gap-3 md:mb-7">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-400/20">
               <BookOpen className="h-5 w-5 text-amber-600" />
             </div>
-            <h3 className="text-lg font-semibold text-accent-foreground">
+            <h3 className="text-lg font-semibold tracking-tight text-accent-foreground md:text-xl">
               어려운 용어 쉬운 풀이
             </h3>
           </div>
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-6 md:gap-7">
             {result.terms.map((item) => (
               <div key={item.term}>
-                <p className="mb-1 font-semibold text-accent-foreground">
+                <p className="mb-2 font-semibold text-accent-foreground md:text-base">
                   {item.term}
                 </p>
-                <p className="text-base leading-relaxed text-accent-foreground">
+                <p className="text-base leading-relaxed text-accent-foreground/95 md:leading-loose">
                   {item.explanation}
                 </p>
-                <p className="mt-2 text-sm text-amber-700">
+                <p className="mt-3 text-sm leading-relaxed text-amber-800/90 md:text-base">
                   <span className="font-medium">예시:</span> {item.example}
                 </p>
               </div>

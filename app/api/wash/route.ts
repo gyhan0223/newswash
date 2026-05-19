@@ -13,7 +13,7 @@ function getOpenAIClient() {
     apiKey: process.env.OPENROUTER_API_KEY,
     baseURL: OPENROUTER_BASE_URL,
     defaultHeaders: {
-      "HTTP-Referer": OPENROUTER_SITE_URL,
+      "HTTP-Referer": "https://v0-newswash.vercel.app/",
       "X-Title": "NewsWash",
     },
   })
