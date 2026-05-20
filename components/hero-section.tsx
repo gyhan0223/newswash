@@ -22,7 +22,7 @@ export function HeroSection() {
 
       {/* Sub-headline */}
       <p className="mx-auto max-w-md text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-        연합뉴스의 권위는 그대로,
+        뉴스의 권위는 그대로,
         <br className="hidden md:block" />
         설명은 초등학생도 이해하게.
       </p>
