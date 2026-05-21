@@ -93,7 +93,49 @@ export function ResultSection({ result }: ResultSectionProps) {
       <p className="mt-10 text-center text-sm leading-relaxed text-muted-foreground md:mt-12">
         AI가 생성한 요약입니다. 원문과 함께 확인해주세요.
       </p>
+
+      <ResultDisclaimer />
     </section>
+  )
+}
+
+function ResultDisclaimer() {
+  return (
+    <footer
+      className="mt-10 border-t border-border/40 pt-8 md:mt-12 md:pt-10"
+      aria-label="서비스 이용 안내 및 면책 조항"
+    >
+      <div className="mx-auto max-w-2xl space-y-3 text-xs leading-relaxed text-muted-foreground/60">
+        <p>
+          본 서비스(NewsWash)는 사용자가 직접 입력한 URL 또는 텍스트를 기반으로,
+          개인의 사적 학습 및 이해를 돕기 위해 실시간 AI 가공(요약 및 용어 풀이)
+          결과를 제공하는{" "}
+          <strong className="font-medium text-muted-foreground/70">
+            개인용 언론/수집 도구(Tool)
+          </strong>
+          입니다.
+        </p>
+        <p>
+          본 서비스는 어떠한 뉴스 기사 원문도 데이터베이스(DB)에 무단으로 저장,
+          복제, 또는 아카이빙하지 않으며, 불특정 다수에게 원문을 재배포하지
+          않습니다.
+        </p>
+        <p>
+          가공된 아티클의 모든 저작권은 원저작권자(각 언론사 및 기자)에게
+          있으며, 본 서비스는 저작권 보호 및 트래픽 상생을 위해 원본 기사로
+          이동하는{" "}
+          <strong className="font-medium text-muted-foreground/70">
+            아웃링크(Outlink)
+          </strong>
+          를 필수적으로 제공합니다.
+        </p>
+        <p>
+          사용자는 본 서비스의 결과를 상업적 목적이나 공공에 재배포하는 용도로
+          사용할 수 없으며, 이를 위반하여 발생하는 저작권 분쟁의 책임은 이용자
+          본인에게 있습니다.
+        </p>
+      </div>
+    </footer>
   )
 }
 
